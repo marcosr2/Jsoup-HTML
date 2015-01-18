@@ -57,7 +57,6 @@ public class JsoupHTML {
         getInfoProcessoPartes(elements.eq(2));
         getInfoProcessoDistribuicoes(elements.eq(4));
         getinfoProcessoMovimentos(elements.eq(5));
-        System.out.println("mmmm");
     }
     
 
