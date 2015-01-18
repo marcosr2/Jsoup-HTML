@@ -45,7 +45,7 @@ public class JsoupHTML {
             parserProcesso.getInfoProcesso();
 
         } catch (IOException ex) {
-            System.out.println("ERROR: Get URL");
+            System.out.println("ERRO: Obter URL " + ex.getMessage());
         }
 
     }
