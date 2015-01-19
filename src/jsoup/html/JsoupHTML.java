@@ -65,14 +65,6 @@ public class JsoupHTML {
     private void getNumeroProcesso(Elements elements) {
         System.out.println("<<<Processo Número>>>");
 
-//        for (Element element : elements) {
-//            Elements filha = element.getElementsByTag("div-header");
-//            //Jsoup.parse(document.html().replaceAll("(?i)<br[^>]*>", "<pre>\n</pre>")).text();
-//            for (Element tb : filha) {
-//                String tit = tb.getElementsByTag("th").text();
-//                String desc = tb.getElementsByTag("td").text();
-//                System.out.println(tit + ": " + desc);
-//            }
         Element element = elements.first();
         Element numProces = element.getElementsByClass("div-header").first();
         String processo = numProces.getElementsByClass("div-header").text();
