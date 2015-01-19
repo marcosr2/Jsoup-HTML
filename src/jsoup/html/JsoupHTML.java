@@ -156,5 +156,4 @@ public class JsoupHTML {
         }
         return result;
     }
-
 }
