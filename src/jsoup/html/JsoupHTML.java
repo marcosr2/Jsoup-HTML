@@ -51,14 +51,36 @@ public class JsoupHTML {
     }
 
     private void getInfoProcesso() {
+        Elements elementNumProcesso = document.getElementsByClass("content");
         Elements elements = document.getElementsByClass("div-table");
-
+        //Num. do processo
+        getNumeroProcesso(elementNumProcesso.eq(0));
+        //Dados do Processo
         getInfoProcessoDetalhes(elements.eq(0));
         getInfoProcessoPartes(elements.eq(2));
         getInfoProcessoDistribuicoes(elements.eq(4));
         getinfoProcessoMovimentos(elements.eq(5));
     }
-    
+
+    private void getNumeroProcesso(Elements elements) {
+        System.out.println("<<<Processo Número>>>");
+
+//        for (Element element : elements) {
+//            Elements filha = element.getElementsByTag("div-header");
+//            //Jsoup.parse(document.html().replaceAll("(?i)<br[^>]*>", "<pre>\n</pre>")).text();
+//            for (Element tb : filha) {
+//                String tit = tb.getElementsByTag("th").text();
+//                String desc = tb.getElementsByTag("td").text();
+//                System.out.println(tit + ": " + desc);
+//            }
+        Element element = elements.first();
+        Element numProces = element.getElementsByClass("div-header").first();
+        String processo = numProces.getElementsByClass("div-header").text();
+        System.out.println("Número do Processo: " + processo);
+
+//        }
+        System.out.println("------------------------------------------------------------------------------------------------------");
+    }
 
     private void getInfoProcessoDetalhes(Elements elements) {
         System.out.println("<<<Detalhes>>>");
@@ -70,12 +92,12 @@ public class JsoupHTML {
             for (Element tb : filha) {
                 String tit = tb.getElementsByTag("th").text();
                 String desc = tb.getElementsByTag("td").text();
-                
+
                 if (tit.equals("Data de Abertura") || tit.equals("")) {
                     try {
                         Date date = formatter.parse(desc);
                         //System.out.println("DATA: " + date);
-                        
+
                         String novaData = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
                         //System.out.println("NOVO FORMATO: " + novaData);
                         desc = novaData;
