@@ -65,7 +65,8 @@ public class JsoupHTML {
         Element element = elements.first();
         Element numProces = element.getElementsByClass("div-header").first();
         String processo = numProces.getElementsByClass("div-header").text();
-        System.out.println("Número do " + processo);
+        processo  = processo.substring(9, 34);
+        System.out.println("Número do Processo: " + processo);
 
 //        }
         System.out.println("------------------------------------------------------------------------------------------------------");
