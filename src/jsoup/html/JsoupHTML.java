@@ -5,6 +5,7 @@
  */
 package jsoup.html;
 
+import beans.etiqueta;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,19 +28,24 @@ public class JsoupHTML {
      * @param args the command line arguments
      */
     private final Document document;
+    private static String url = "";
+    etiqueta etiqueta ;
+    
 
     public JsoupHTML(Document document) {
         this.document = document;
+        etiqueta = new etiqueta();
     }
 
     public static void main(String[] args) {
 
         try {
-            String url = "http://www.tjpi.jus.br/themisconsulta/processo/303743037";
+            url = "http://www.tjpi.jus.br/themisconsulta/processo/303743037";
             Document document = Jsoup.connect(url).userAgent("Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)").timeout(30000).get();
 
             JsoupHTML parserProcesso = new JsoupHTML(document);
             parserProcesso.getInfoProcesso();
+            
 
         } catch (IOException ex) {
             System.out.println("ERRO: Obter URL " + ex.getMessage());
@@ -48,6 +54,8 @@ public class JsoupHTML {
     }
 
     private void getInfoProcesso() {
+        System.out.println("URL Original: " + url);
+        System.out.println("------------------------------------------------------------------------------------------------------");
         Elements elementNumProcesso = document.getElementsByClass("content");
         Elements elements = document.getElementsByClass("div-table");
         //Num. do processo
@@ -57,6 +65,16 @@ public class JsoupHTML {
         getInfoProcessoPartes(elements.eq(2));
         getInfoProcessoDistribuicoes(elements.eq(4));
         getinfoProcessoMovimentos(elements.eq(5));
+        
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<ETIQUETA>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Processo Nº: " + etiqueta.getNumProcesso()+"\n"
+        + etiqueta.getTribunal()+"\n"
+        + etiqueta.getSecretariaVara()+"\n"
+        + "Comarca: " + etiqueta.getComarca()+"\n"
+        + "Valor: " + etiqueta.getValorAcao()+"\n"
+        + "Data de Abertura: " + etiqueta.getDataAcao()+"\n"
+        + "Requerente: " + etiqueta.getParteRequerente());
+        System.out.println("*******FIM DA ETIQUETA********");
     }
 
     private void getNumeroProcesso(Elements elements) {
@@ -67,6 +85,9 @@ public class JsoupHTML {
         String processo = numProces.getElementsByClass("div-header").text();
         processo  = processo.substring(9, 34);
         System.out.println("Número do Processo: " + processo);
+        
+        etiqueta.setNumProcesso(processo);
+        etiqueta.setTribunal("Tribunal de Justiça do Estado do Piauí - TJPI");
 
 //        }
         System.out.println("------------------------------------------------------------------------------------------------------");
@@ -75,6 +96,7 @@ public class JsoupHTML {
     private void getInfoProcessoDetalhes(Elements elements) {
         System.out.println("<<<Detalhes>>>");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date date = null;
         formatter.setTimeZone(TimeZone.getDefault());
         for (Element element : elements) {
             Elements filha = element.getElementsByTag("tr");
@@ -84,13 +106,21 @@ public class JsoupHTML {
 
                 if (tit.equals("Data de Abertura") || tit.equals("")) {
                     try {
-                        Date date = formatter.parse(desc);
+                        date = formatter.parse(desc);
 
                         String novaData = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
                         desc = novaData;
                     } catch (ParseException ex) {
                         Logger.getLogger(JsoupHTML.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                if (tit.equals("Valor da ação")) {
+                    desc = "R$ " + desc.replace(".", ",").concat("0");
+                    etiqueta.setValorAcao(desc);
+                }
+                if (tit.equals("Data de Abertura")) {
+                    
+                    etiqueta.setDataAcao(desc);
                 }
 
                 System.out.println(tit + ": " + desc);
@@ -109,6 +139,10 @@ public class JsoupHTML {
                 String tit = tb.getElementsByTag("th").text();
                 String desc = tb.getElementsByTag("td").text();
                 System.out.println(tit + ": " + desc);
+                
+                if (tit.equals("Requerente")) {
+                    etiqueta.setParteRequerente(desc);
+                }
             }
 
         }
@@ -123,6 +157,14 @@ public class JsoupHTML {
                 String tit = tb.getElementsByTag("th").text();
                 String desc = tb.getElementsByTag("td").text();
                 System.out.println(tit + ": " + desc);
+                
+                if (tit.equals("Comarca")) {
+                    etiqueta.setComarca(desc);
+                }
+                if (tit.equals("Secretaria/Vara")) {
+                    etiqueta.setSecretariaVara(desc);
+                }
+                
             }
 
         }
