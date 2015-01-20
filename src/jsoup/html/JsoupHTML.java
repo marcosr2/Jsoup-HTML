@@ -77,6 +77,7 @@ public class JsoupHTML {
         System.out.println("*******FIM DA ETIQUETA********");
     }
 
+    
     private void getNumeroProcesso(Elements elements) {
         System.out.println("<<<Processo Número>>>");
 
