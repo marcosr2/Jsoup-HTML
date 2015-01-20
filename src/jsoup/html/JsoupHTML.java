@@ -37,8 +37,6 @@ public class JsoupHTML {
         try {
             String url = "http://www.tjpi.jus.br/themisconsulta/processo/303743037";
             Document document = Jsoup.connect(url).userAgent("Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)").timeout(30000).get();
-//            //Elements elements = document.getElementsByClass("content");
-//            Elements elements = document.getElementsByClass("div-header");
 
             JsoupHTML parserProcesso = new JsoupHTML(document);
             parserProcesso.getInfoProcesso();
@@ -78,7 +76,6 @@ public class JsoupHTML {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         formatter.setTimeZone(TimeZone.getDefault());
         for (Element element : elements) {
-            //String titulo = element.getElementsByClass("table-condensed").text();
             Elements filha = element.getElementsByTag("tr");
             for (Element tb : filha) {
                 String tit = tb.getElementsByTag("th").text();
@@ -87,10 +84,8 @@ public class JsoupHTML {
                 if (tit.equals("Data de Abertura") || tit.equals("")) {
                     try {
                         Date date = formatter.parse(desc);
-                        //System.out.println("DATA: " + date);
 
                         String novaData = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
-                        //System.out.println("NOVO FORMATO: " + novaData);
                         desc = novaData;
                     } catch (ParseException ex) {
                         Logger.getLogger(JsoupHTML.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,11 +137,9 @@ public class JsoupHTML {
             Elements filha = element.getElementsByTag("tr");
             for (Element tb : filha) {
                 String tit = tb.getElementsByTag("th").text();
-                String desc = tb.getElementsByTag("td").text();
-                String desc2 = tb.getElementsByTag("td").html();
-//                System.out.println(">>>>>>>> "+tb.getElementsByClass("movimentacao-descricao").html());
+                String desc = tb.getElementsByTag("td").html();
                 String descricao = "";
-                descricao = trocarTagBRporQuebraDeLinha(desc2, descricao);
+                descricao = trocarTagBRporQuebraDeLinha(desc, descricao);
 
                 System.out.println(tit + " --> " + descricao);
                 System.out.println("_______________________________________________________________________________________________");
